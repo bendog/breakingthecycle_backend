@@ -26,12 +26,20 @@ class Rider(models.Model):
     # def calc_kms_ridden(self):
     #     total_kms_ridden = RiderUpdates.objects.aggregate(s=Sum('kms_ridden'))["s"]
     #     return(total_kms_ridden)
+
+    @property
+    def kms_ridden(self):
+        return self.updates.all().aggregate(total=Sum('kms_ridden'))['total']
     
     # @property
     # def calc_amount_raised(self):
     #     donations = Donation.objects.select_related('rider')
     #     total_raised = donations.aggregate(s=Sum('amount'))["s"]
     #     return(total_raised)
+
+    @property
+    def amount_donated(self):
+        return self.donations.aggregate(total=Sum('amount'))['total']
     
     # @property
     # def calc_kms_to_ride(self):
@@ -41,6 +49,10 @@ class Rider(models.Model):
     #     rate = Rider.objects.get().rate
     #     kms_to_ride = rate * donation_kms
     #     return(kms_to_ride)
+
+    @property
+    def kms_to_ride(self):
+        return self.rate * self.amount_donated
 
 
 class RiderUpdates(models.Model):
